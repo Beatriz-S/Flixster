@@ -7,16 +7,24 @@ import android.util.Log;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.codepath.asynchttpclient.AsyncHttpClient;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.flixter.models.Movies;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.parceler.Parcels;
+
+import okhttp3.Headers;
 
 public class DetailActivity extends YouTubeBaseActivity {
     public static final String YOUTUBE_API_KEY="AIzaSyCsrrVto5-vcTx-GHs4Fg8pzV_WZx3ZX8I";
+    public static final String VIDEOS_URL="https://api.themoviedb.org/3/movie/%d/videos?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
+
 
     TextView tvTitle;
     TextView tvOverview;
@@ -33,16 +41,46 @@ public class DetailActivity extends YouTubeBaseActivity {
         ratingBar=findViewById(R.id.ratingBar);
         youTubePlayerView=findViewById(R.id.player);
 
+
         //String title=getIntent().getStringExtra("title");
         Movies movie= Parcels.unwrap(getIntent().getParcelableExtra("movie"));
         tvTitle.setText(movie.getTitle());
         tvOverview.setText(movie.getOverview());
         ratingBar.setRating((float)movie.getRating());
+
+        AsyncHttpClient client=new AsyncHttpClient();
+        client.get(String.format(VIDEOS_URL,movie.getMovieId()), new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Headers headers, JSON json) {
+                try {
+                    JSONArray results=json.jsonObject.getJSONArray("results");
+                    if(results.length()==0)
+                    {
+                        return;
+                    }
+                    String youtubeKey=results.getJSONObject(0).getString("key");
+                    Log.e("DetailActivity",youtubeKey);
+                    intializeYoutube(youtubeKey);
+                } catch (JSONException e) {
+                    Log.e("DetailActivity","Failed to parse JSON",e);
+                    //e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Headers headers, String s, Throwable throwable) {
+
+            }
+        });
+    }
+
+    private void intializeYoutube(final String youtubeKey) {
+
         youTubePlayerView.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 Log.d("DetailActivity","onInitializationSuccess");
-                youTubePlayer.cueVideo("5xVh-7ywKpE");
+                youTubePlayer.cueVideo(youtubeKey);
             }
 
             @Override
@@ -50,6 +88,5 @@ public class DetailActivity extends YouTubeBaseActivity {
                 Log.d("DetailActivity","onInitializationFailure");
             }
         });
-
     }
 }
