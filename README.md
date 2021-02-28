@@ -3,12 +3,9 @@ Flixter is an app that allows users to browse movies from the [The Movie Databas
 
 
 ### User Stories
-
-#### REQUIRED (10pts)
-
-- [x] (8pts) Expose details of movie (ratings using RatingBar, popularity, and synopsis) in a separate activity.
-- [x] (2pts) Allow video posts to be played in full-screen using the YouTubePlayerView.
-
+- [x]  Expose details of movie (ratings using RatingBar, popularity, and synopsis) in a separate activity.
+- [x]  Allow video posts to be played in full-screen using the YouTubePlayerView.
+- [x]  User can view a list of movies (title, poster image, and overview) currently playing in theaters from the Movie Database API.
 
 ### App Walkthough GIF
 
@@ -21,10 +18,6 @@ Flixter is an app that allows users to browse movies from the [The Movie Databas
 - [Android Async HTTP](https://github.com/codepath/CPAsyncHttpClient) - Simple asynchronous HTTP requests with JSON parsing
 - [Glide](https://github.com/bumptech/glide) - Image loading and caching library for Android
 
-## Flix Part 1
-
-#### REQUIRED (10pts)
-- [x] (10pts) User can view a list of movies (title, poster image, and overview) currently playing in theaters from the Movie Database API.
 
 
 
